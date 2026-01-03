@@ -12,7 +12,7 @@ from launch_ros.actions import Node
 
 
 
-def generate_launch_description():
+def generate_launch_description():   #Ham chinh se tra ve LaunchDescription chua cac action se duoc thuc hien khi chay ros2 launch
 
 
     # Include the robot_state_publisher launch file, provided by our own package. Force sim time to be enabled
@@ -23,7 +23,7 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'true', 'use_ros2_control': 'true'}.items()
+                )]), launch_arguments={'use_sim_time': 'true', 'use_ros2_control': 'true'}.items()  #use_ros2-control kich hoat ros2 control trong urdf 
     )
     
     default_world = os.path.join(
@@ -58,8 +58,8 @@ def generate_launch_description():
 
     # Launch them all!
     return LaunchDescription([
+        world_arg,
         rsp,
         gazebo,
-        world_arg,
         spawn_entity,
     ])
