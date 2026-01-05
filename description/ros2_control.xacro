@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:unless value="$(arg sim_mode)">
+    <xacro:unless value="$(arg sim_mode)">      
         <ros2_control name="RealRobot" type="system">
             <hardware>
-                <plugin>diffdrive_arduino/DiffDriveArduinoHardware</plugin>
+                <plugin>diffdrive_arduino/DiffDriveArduinoHardware</plugin>  <!-- custom interface để giao tiếp với arduino qua serial-->
                 <param name="left_wheel_name">left_wheel_joint</param>
                 <param name="right_wheel_name">right_wheel_joint</param>
                 <param name="loop_rate">30</param>
@@ -18,7 +18,7 @@
                     <param name="min">-10</param>
                     <param name="max">10</param>
                 </command_interface>
-                <state_interface name="position"/>
+                <state_interface name="position"/>  <!-- state position and velocity đọc từ encoder-->
                 <state_interface name="velocity"/>
             </joint>
             <joint name="right_wheel_joint">
@@ -30,10 +30,10 @@
                 <state_interface name="velocity"/>
             </joint>
         </ros2_control>
-    </xacro:unless>
+    </xacro:unless>            <!-- chỉ duoc include khi sim_mode = false (mac dinh khi khong truyen qua argument)-->
 
-    <xacro:if value="$(arg sim_mode)">
-        <ros2_control name="GazeboSystem" type="system">
+    <xacro:if value="$(arg sim_mode)">      <!-- chỉ được include khi sim_mode = true-->
+        <ros2_control name="GazeboSystem" type="system">   <!-- mô phỏng hardware - Gazebo sẽ tự simulate physics and joint states-->
             <hardware>
                 <plugin>gz_ros2_control/GazeboSimSystem</plugin>
             </hardware>
@@ -56,7 +56,7 @@
         </ros2_control>
     </xacro:if>
 
-    <gazebo>
+    <gazebo>        <!-- luôn được include bất kể mode, kết nối Gazebo và ros2_control-->
         <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="libgz_ros2_control-system.so">
             <parameters>$(find articubot_one)/config/my_controllers.yaml</parameters>
             <parameters>$(find articubot_one)/config/gaz_ros2_ctl_use_sim.yaml</parameters>
@@ -64,3 +64,5 @@
     </gazebo>
 
 </robot>
+
+<!-- when run simulation, pass sim_mode:=true -->
